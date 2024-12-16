@@ -11,6 +11,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class EmployeeDaoApp {
 
@@ -29,6 +30,7 @@ public class EmployeeDaoApp {
                     new ClassLoaderResourceAccessor(),
                     database);
             liquibase.update(new Contexts());
+//            liquibase.validate();
         }
 
         EmployeeDao dao = new EmployeeDao(dataSource);
@@ -50,5 +52,10 @@ public class EmployeeDaoApp {
 
         List<Employee> employees = dao.findAll();
         System.out.println(employees);
+
+        List<Employee> employeesToCreate = IntStream.range(0, 5)
+                .mapToObj(i -> new Employee(null, "John Doe" + i))
+                .toList();
+        dao.saveAll(employeesToCreate);
     }
 }

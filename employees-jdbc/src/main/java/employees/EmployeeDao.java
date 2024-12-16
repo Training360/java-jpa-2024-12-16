@@ -19,8 +19,14 @@ public class EmployeeDao {
 
     @SneakyThrows
     public Employee save(Employee employee) {
+        try (Connection con = dataSource.getConnection()) {
+            return save(con, employee);
+        }
+    }
+
+    @SneakyThrows
+    private Employee save(Connection con, Employee employee) {
         try (
-                Connection con = dataSource.getConnection();
                 PreparedStatement ps = con.prepareStatement("""
                    insert into employees(id, emp_name) values (nextval('seq_employees'), ?)
                    """, new String[]{"id"})
@@ -106,4 +112,20 @@ public class EmployeeDao {
         }
     }
 
+    // ACID
+    @SneakyThrows
+    public List<Employee> saveAll(List<Employee> employees) {
+        try (Connection con = dataSource.getConnection()) {
+            con.setAutoCommit(false);
+
+            List<Employee> createdEmployees = new ArrayList<>();
+            for (Employee employee : employees) {
+                Employee created = save(con, employee);
+                createdEmployees.add(created);
+            }
+
+            con.commit();
+            return createdEmployees;
+        }
+    }
 }
