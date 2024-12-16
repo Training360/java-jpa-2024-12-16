@@ -7,9 +7,12 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,15 +25,28 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class EmployeeDaoTest {
 
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17.2-alpine");
+
     EmployeeDao dao;
+
+    @BeforeAll
+    static void startDb() {
+        postgres.start();
+    }
+
+    @AfterAll
+    static void stopDb() {
+        postgres.stop();
+    }
 
     @BeforeEach
     void createDao() throws SQLException, LiquibaseException {
         // Given
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://localhost:5432/employees");
-        dataSource.setUser("employees");
-        dataSource.setPassword("employees");
+        System.out.println(postgres.getJdbcUrl());
+        dataSource.setURL(postgres.getJdbcUrl());
+        dataSource.setUser(postgres.getUsername());
+        dataSource.setPassword(postgres.getPassword());
 
         try (Connection connection = dataSource.getConnection()) {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
