@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,19 +64,34 @@ public class EmployeeDao {
                 PreparedStatement ps = con.prepareStatement("""
                    select id, emp_name from employees where id = ? 
            """);
-
         ) {
             ps.setLong(1, id);
+            return loadEmployee(id, ps);
+        }
+    }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    String name = rs.getString(2);
-                    return Optional.of(new Employee(id, name));
-                }
-                else {
-                    return Optional.empty();
-                }
+    private Optional<Employee> loadEmployee(long id, PreparedStatement ps) throws SQLException {
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String name = rs.getString(2);
+                return Optional.of(new Employee(id, name));
             }
+            else {
+                return Optional.empty();
+            }
+        }
+    }
+
+    @SneakyThrows
+    public Employee update(Employee employee) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement ps = con.prepareStatement("update employees set emp_name = ? where id = ?")
+                ) {
+            ps.setString(1, employee.name());
+            ps.setLong(2, employee.id());
+            ps.executeUpdate();
+            return employee;
         }
     }
 

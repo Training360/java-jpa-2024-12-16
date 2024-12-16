@@ -14,9 +14,16 @@ public class EmployeeDaoApp {
 
         EmployeeDao dao = new EmployeeDao(dataSource);
         Employee created = dao.save(new Employee(null, "John Doe"));
+        long id = created.id();
         System.out.println(created);
 
-        dao.findById(created.id()).ifPresent(
+        dao.findById(id).ifPresent(
+                employee -> System.out.println("Employee: " + employee)
+        );
+
+        dao.update(new Employee(id, "Jack Doe"));
+
+        dao.findById(id).ifPresent(
                 employee -> System.out.println("Employee: " + employee)
         );
 
