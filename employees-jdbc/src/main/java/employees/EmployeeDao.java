@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class EmployeeDao {
@@ -55,5 +56,27 @@ public class EmployeeDao {
         }
     }
 
+    @SneakyThrows
+    public Optional<Employee> findById(long id) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement ps = con.prepareStatement("""
+                   select id, emp_name from employees where id = ? 
+           """);
+
+        ) {
+            ps.setLong(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String name = rs.getString(2);
+                    return Optional.of(new Employee(id, name));
+                }
+                else {
+                    return Optional.empty();
+                }
+            }
+        }
+    }
 
 }

@@ -16,6 +16,10 @@ public class EmployeeDaoApp {
         Employee created = dao.save(new Employee(null, "John Doe"));
         System.out.println(created);
 
+        dao.findById(created.id()).ifPresent(
+                employee -> System.out.println("Employee: " + employee)
+        );
+
         List<Employee> employees = dao.findAll();
         System.out.println(employees);
     }
