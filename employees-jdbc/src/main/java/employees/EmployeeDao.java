@@ -95,4 +95,15 @@ public class EmployeeDao {
         }
     }
 
+    @SneakyThrows
+    public void deleteById(long id) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement ps = con.prepareStatement("delete from employees where id = ?")
+                ) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        }
+    }
+
 }
