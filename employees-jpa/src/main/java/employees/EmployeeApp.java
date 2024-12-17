@@ -19,7 +19,8 @@ public class EmployeeApp {
             System.out.println(em.find(Employee.class, 1L));
 
             em.getTransaction().begin();
-            Employee employee = new Employee("John Doe EclipseLink", EmployeeStatus.ACCEPTED);
+            Employee employee = new Employee("John Doe EclipseLink",
+                    EmployeeStatus.ACCEPTED, new Phone("30", "1234567"));
             em.persist(employee);
             em.getTransaction().commit();
 
