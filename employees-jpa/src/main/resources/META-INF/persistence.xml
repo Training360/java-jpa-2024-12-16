@@ -6,8 +6,16 @@
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/employees"/>
             <property name="jakarta.persistence.jdbc.user" value="employees"/>
             <property name="jakarta.persistence.jdbc.password" value="employees"/>
-            
+
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+
+            <property name="eclipselink.logging.level.sql" value="fine"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <property name="hibernate.show_sql" value="true"/>
+<!--            <property name="hibernate.format_sql" value="true"/>-->
+<!--            <property name="hibernate.use_sql_comments" value="true"/>-->
         </properties>
     </persistence-unit>
 </persistence>

@@ -1,12 +1,16 @@
 package employees;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter @Setter
 @NoArgsConstructor
+@Table(name = "employees")
+
+@NamedQuery(name = "Employee.findAll", query = "select e from Employee e")
 public class Employee {
 
     @Id
@@ -14,6 +18,7 @@ public class Employee {
     @SequenceGenerator(name = "employee_sequence_generator", sequenceName = "seq_employees")
     private Long id;
 
+    @Column(name = "emp_name")
     private String name;
 
     public Employee(String name) {
