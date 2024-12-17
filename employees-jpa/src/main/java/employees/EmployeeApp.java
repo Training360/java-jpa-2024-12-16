@@ -35,7 +35,8 @@ public class EmployeeApp {
 
             System.out.println("1:" + em.contains(employee));
 
-            em.clear();
+//            em.clear();
+            em.detach(employee);
 
             System.out.println("2:" + em.contains(employee));
 
