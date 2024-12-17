@@ -4,66 +4,39 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeeApp {
 
     public static void main(String[] args) {
+
         long id;
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("pu");
         try (
 
                 EntityManager em = factory.createEntityManager()) {
 
-
-            System.out.println(em.find(Employee.class, 1L));
-
             em.getTransaction().begin();
-            Employee employee = new Employee("John Doe EclipseLink",
-                    EmployeeStatus.ACCEPTED, new Phone("30", "1234567"));
+
+            Employee employee = new Employee("John Doe", List.of("J", "John", "Johnny"),
+                    List.of(new Vacation(LocalDate.now(), 5),
+                            new Vacation(LocalDate.of(2024, 1, 1), 10)));
             em.persist(employee);
-            em.getTransaction().commit();
-
-            List<Employee> employees =
-                    em.createQuery("select e from Employee e", Employee.class).getResultList();
-            System.out.println(employees);
-
-            em.createQuery("select e from Employee e", Employee.class)
-                    .getResultStream().forEach(System.out::println);
-
             id = employee.getId();
-
-            System.out.println("1:" + em.contains(employee));
-
-//            em.clear();
-            em.detach(employee);
-
-            System.out.println("2:" + em.contains(employee));
-
-
-
-        }
-
-        try (EntityManager em = factory.createEntityManager()) {
-            System.out.println("Find employee by id");
-            em.getTransaction().begin();
-            Employee loaded = em.find(Employee.class, id);
-            System.out.println("3:" + em.contains(loaded));
-            loaded.setName("John Doe XXX");
-
             em.getTransaction().commit();
-            System.out.println("Loaded employee: " + loaded);
 
         }
 
-//        System.out.println("Delete employee");
-//        try (EntityManager em = factory.createEntityManager()) {
-//            em.getTransaction().begin();
-////            Employee employeeToDelete = em.find(Employee.class, id);
-//            Employee employeeToDelete = em.getReference(Employee.class, id);
-//            System.out.println("Call remove method");
-//            em.remove(employeeToDelete);
-//            em.getTransaction().commit();
-//        }
+        Employee employee;
+        try (EntityManager em = factory.createEntityManager()) {
+            employee = em.find(Employee.class, id);
+        }
+
+        System.out.println(employee.getName());
+        System.out.println(employee.getNickNames());
+        employee.getNickNames().stream().forEach(System.out::println);
+
+        employee.getVacations().stream().forEach(System.out::println);
     }
 }

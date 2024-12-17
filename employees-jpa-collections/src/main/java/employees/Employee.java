@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -24,34 +25,20 @@ public class Employee {
     @Column(name = "emp_name")
     private String name;
 
-//    @Enumerated(EnumType.STRING)
-    @Column(name = "employee_status")
-    @Convert(converter = EmployeeStatusConverter.class)
-    private EmployeeStatus employeeStatus;
+    @ElementCollection// TILOS: (fetch = FetchType.EAGER)
+    private List<String> nickNames;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @ElementCollection
+    private List<Vacation> vacations;
 
-    @Convert(converter = PhoneConverter.class)
-    private Phone phone;
-
-    public Employee(String name) {
+    public Employee(String name, List<String> nickNames) {
         this.name = name;
+        this.nickNames = nickNames;
     }
 
-    public Employee(String name, EmployeeStatus employeeStatus) {
+    public Employee(String name, List<String> nickNames, List<Vacation> vacations) {
         this.name = name;
-        this.employeeStatus = employeeStatus;
-    }
-
-    public Employee(String name, EmployeeStatus employeeStatus, Phone phone) {
-        this.name = name;
-        this.employeeStatus = employeeStatus;
-        this.phone = phone;
-    }
-
-    @PrePersist
-    public void initCreatedAt() {
-        createdAt = LocalDateTime.now();
+        this.nickNames = nickNames;
+        this.vacations = vacations;
     }
 }
