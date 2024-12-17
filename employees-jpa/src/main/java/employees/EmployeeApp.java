@@ -19,7 +19,7 @@ public class EmployeeApp {
             System.out.println(em.find(Employee.class, 1L));
 
             em.getTransaction().begin();
-            Employee employee = new Employee("John Doe EclipseLink");
+            Employee employee = new Employee("John Doe EclipseLink", EmployeeStatus.ACCEPTED);
             em.persist(employee);
             em.getTransaction().commit();
 
@@ -54,14 +54,14 @@ public class EmployeeApp {
 
         }
 
-        System.out.println("Delete employee");
-        try (EntityManager em = factory.createEntityManager()) {
-            em.getTransaction().begin();
-//            Employee employeeToDelete = em.find(Employee.class, id);
-            Employee employeeToDelete = em.getReference(Employee.class, id);
-            System.out.println("Call remove method");
-            em.remove(employeeToDelete);
-            em.getTransaction().commit();
-        }
+//        System.out.println("Delete employee");
+//        try (EntityManager em = factory.createEntityManager()) {
+//            em.getTransaction().begin();
+////            Employee employeeToDelete = em.find(Employee.class, id);
+//            Employee employeeToDelete = em.getReference(Employee.class, id);
+//            System.out.println("Call remove method");
+//            em.remove(employeeToDelete);
+//            em.getTransaction().commit();
+//        }
     }
 }
