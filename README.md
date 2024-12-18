@@ -1,0 +1,1 @@
+# Perzisztencia, adatbázis programozás JDBC és JPA technológiákkal
