@@ -6,15 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Entity
 @Getter @Setter
 @NoArgsConstructor
 @Table(name = "employees")
 @ToString
 @NamedQuery(name = "Employee.findAll", query = "select e from Employee e")
+@NamedQuery(name = "Employee.findAllWithParkingPlaces", query = "select distinct e from Employee e left join fetch e.parkingPlace order by e.name")
 public class Employee {
 
     @Id
@@ -25,20 +23,11 @@ public class Employee {
     @Column(name = "emp_name")
     private String name;
 
-    @ElementCollection// TILOS: (fetch = FetchType.EAGER)
-    private List<String> nickNames;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ParkingPlace parkingPlace;
 
-    @ElementCollection
-    private List<Vacation> vacations;
-
-    public Employee(String name, List<String> nickNames) {
+    public Employee(String name, ParkingPlace parkingPlace) {
         this.name = name;
-        this.nickNames = nickNames;
-    }
-
-    public Employee(String name, List<String> nickNames, List<Vacation> vacations) {
-        this.name = name;
-        this.nickNames = nickNames;
-        this.vacations = vacations;
+        this.parkingPlace = parkingPlace;
     }
 }

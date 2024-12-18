@@ -1,6 +1,7 @@
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
     <persistence-unit name="pu" transaction-type="RESOURCE_LOCAL">
         <class>employees.Employee</class>
+        <class>employees.ParkingPlace</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>

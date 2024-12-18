@@ -1,42 +1,37 @@
 package employees;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class EmployeeApp {
 
     public static void main(String[] args) {
+        try (EntityManagerFactory factory = Persistence.createEntityManagerFactory("pu")) {
+            EmployeeDao employeeDao = new EmployeeDao(factory);
 
-        long id;
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("pu");
-        try (
+            ParkingPlace parkingPlace = new ParkingPlace(100);
+//            employeeDao.save(parkingPlace);
+            Employee employee = new Employee("John Doe", parkingPlace);
+            employeeDao.save(employee);
 
-                EntityManager em = factory.createEntityManager()) {
+            ParkingPlace parkingPlace2 = new ParkingPlace(200);
+            employee.setParkingPlace(parkingPlace2);
+            employeeDao.update(employee);
 
-            em.getTransaction().begin();
+            //
+            ParkingPlace parkingPlace3 = employeeDao.findParkingPlaceByPosition(100);
+            Employee employee2 = new Employee("Jane Doe", parkingPlace3);
+            employeeDao.update(employee2);
 
-            Employee employee = new Employee("John Doe", List.of("J", "John", "Johnny"),
-                    List.of(new Vacation(LocalDate.now(), 5),
-                            new Vacation(LocalDate.of(2024, 1, 1), 10)));
-            em.persist(employee);
-            id = employee.getId();
-            em.getTransaction().commit();
-
+            //
+            System.out.println("List employees");
+            List<Employee> employees = employeeDao.findAllWithParkingPlaces();
+            for (Employee emp : employees) {
+//                System.out.println(emp.getName() + " " + emp.getParkingPlace());
+                System.out.println(emp.getName());
+            }
         }
-
-        Employee employee;
-        try (EntityManager em = factory.createEntityManager()) {
-            employee = em.find(Employee.class, id);
-        }
-
-        System.out.println(employee.getName());
-        System.out.println(employee.getNickNames());
-        employee.getNickNames().stream().forEach(System.out::println);
-
-        employee.getVacations().stream().forEach(System.out::println);
     }
 }

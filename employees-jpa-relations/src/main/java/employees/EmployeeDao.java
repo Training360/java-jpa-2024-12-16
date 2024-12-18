@@ -33,6 +33,12 @@ public class EmployeeDao {
         }
     }
 
+    public List<Employee> findAllWithParkingPlaces() {
+        try (EntityManager em = factory.createEntityManager()) {
+            return em.createNamedQuery("Employee.findAllWithParkingPlaces").getResultList();
+        }
+    }
+
     public Employee update(Employee employee) {
 //        try (EntityManager em = factory.createEntityManager()) {
 //            em.getTransaction().begin();
@@ -49,10 +55,26 @@ public class EmployeeDao {
         }
     }
 
+    public ParkingPlace findParkingPlaceByPosition(int position) {
+        try (EntityManager em = factory.createEntityManager()) {
+            return em.createQuery("select p from ParkingPlace p where p.position = :position", ParkingPlace.class)
+                    .setParameter("position", position)
+                    .getSingleResult();
+        }
+    }
+
     public void delete(Employee employee) {
         try (EntityManager em = factory.createEntityManager()) {
             em.getTransaction().begin();
             em.remove(employee);
+            em.getTransaction().commit();
+        }
+    }
+
+    public void save(ParkingPlace parkingPlace) {
+        try (EntityManager em = factory.createEntityManager()) {
+            em.getTransaction().begin();
+            em.persist(parkingPlace);
             em.getTransaction().commit();
         }
     }
