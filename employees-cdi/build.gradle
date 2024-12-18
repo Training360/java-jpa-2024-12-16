@@ -10,6 +10,14 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jboss.weld.se:weld-se-shaded:5.1.0.Final'
+    implementation 'org.postgresql:postgresql:42.7.4'
+    implementation 'org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.4'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    runtimeOnly 'org.apache.deltaspike.modules:deltaspike-data-module-impl:2.0.0'
+    implementation 'org.apache.deltaspike.modules:deltaspike-data-module-api:2.0.0'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
